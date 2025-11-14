@@ -2,7 +2,6 @@ const express = require ('express');
 const cors = require('cors');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const { use } = require('react');
 const port = process.env.PORT || 3000;
 
 // MiddleWare
@@ -31,6 +30,8 @@ async function run () {
     const usersCollection = database.collection('users')
     const propertiesCollection = database.collection('properties')
 
+
+    // Users APIs
     app.post('/users', async (req, res) => {
       const newUser = req.body;
       const email = req.body.email;
@@ -45,6 +46,15 @@ async function run () {
       res.send(result);
       }
       
+    })
+
+    // Properties APIs
+
+    app.get('/featured-properties', async (req, res) => {
+      const cursor = propertiesCollection.find().sort({
+createdAt: -1}).limit(6);
+      const result = await cursor.toArray();
+      res.send(result);
     })
 
     app.post('/properties', async (req, res) =>{
