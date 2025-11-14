@@ -48,7 +48,17 @@ app.post('/users', async (req, res) => {
 
    
    
-    
+    app.get('/properties/my-properties/:userEmail', async (req, res) => {
+        try {
+            const userEmail = req.params.userEmail;
+            const query = { userEmail: userEmail };
+            const properties = await propertiesCollection.find(query).toArray();
+            res.status(200).json(properties);
+        } catch (error) {
+            console.error('Error fetching user properties:', error);
+            res.status(500).send({ message: "Failed to fetch properties." });
+        }
+    });
 
    app.get('/properties', async (req, res) => {
       
