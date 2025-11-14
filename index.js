@@ -1,8 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
+console.log(process.env);
+
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 3000;
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server`;
 
 app.use(cors());
 app.use(express.json());
