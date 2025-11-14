@@ -8,7 +8,12 @@ const port = process.env.PORT || 3000;
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server`;
 
-app.use(cors());
+const allowedOrigin = 'https://home-nest-a10.netlify.app/';
+
+app.use(cors({
+  origin: [allowedOrigin, 'http://localhost:3000', 'https://home-nest-a10.netlify.app/'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.get('/', (req, res) => {
