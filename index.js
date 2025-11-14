@@ -6,7 +6,7 @@ const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 3000;
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server`;
 
 const allowedOrigins = ['https://home-nest-a10.netlify.app', 'http://localhost:5173'];
 
