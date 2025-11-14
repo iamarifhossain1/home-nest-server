@@ -6,7 +6,7 @@ const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 3000;
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server`;
 
 app.use(cors());
 app.use(express.json());
@@ -33,7 +33,7 @@ async function run() {
         
         const reviewsCollection = database.collection('reviews');
 
-       
+        
         app.post('/users', async (req, res) => {
             const newUser = req.body;
             const email = req.body.email;
@@ -118,10 +118,10 @@ async function run() {
                     return res.status(404).send({ message: "Property not found" });
                 }
                 
-               
+                
                 const reviews = await reviewsCollection.find({ propertyId: id }).sort({ reviewDate: -1 }).toArray();
                 
-               
+                
                 const totalRating = reviews.reduce((sum, review) => sum + review.starRating, 0);
                 const averageRating = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
 
@@ -188,12 +188,12 @@ async function run() {
             
             reviewData.reviewDate = new Date(); 
             
-           
+            
             if (!reviewData.propertyId || !reviewData.reviewerId || !reviewData.starRating || !reviewData.reviewText) {
                 return res.status(400).send({ message: "Missing required review fields." });
             }
             
-           
+            
             if (reviewData.starRating < 1 || reviewData.starRating > 5) {
                 return res.status(400).send({ message: "Star rating must be between 1 and 5." });
             }
@@ -226,9 +226,32 @@ async function run() {
             }
         });
 
+        // ⭐ REVIEW DELETE ROUTE JOG KORA HOLO
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            try {
+                const query = { _id: new ObjectId(id) }; 
+                
+                const result = await reviewsCollection.deleteOne(query);
+                
+                if (result.deletedCount === 0) {
+                    return res.status(404).send({ message: "Review not found or already deleted." });
+                }
+                
+                res.status(200).send({ 
+                    success: true, 
+                    message: "Review deleted successfully.",
+                    result 
+                });
+            } catch (error) {
+                console.error("Error deleting review:", error);
+                res.status(500).send({ message: "Failed to delete review.", error: error.message });
+            }
+        });
 
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     }
 
     finally {
@@ -239,6 +262,4 @@ async function run() {
 run().catch(console.dir);
 
 
-app.listen(port, () => {
-    console.log(`Server running on Port: ${port}`);
-});
+module.exports = app;
