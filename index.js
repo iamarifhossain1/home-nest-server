@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-console.log(process.env);
 
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -15,8 +14,6 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Home Nest Server Running');
 });
-
-const uri = "mongodb+srv://home-nest:nqB8jB2PADweozvT@crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server";
 
 const client = new MongoClient(uri, {
     serverApi: {
