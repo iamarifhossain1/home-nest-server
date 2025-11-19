@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require ('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.port || 3000;
 
@@ -30,9 +30,43 @@ async function run () {
         const database = client.db('home_nest')
         const propertiesCollection = database.collection('properties')
 
+        app.get('/properties', async (req, res) => {
+            const cursor = propertiesCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/properties/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const result = await propertiesCollection.findOne(query);
+            res.send(result);
+        })
+
         app.post('/properties', async(req, res) => {
             const newProduct = req.body;
             const result = await propertiesCollection.insertOne(newProduct);
+            res.send(result);
+        })
+
+        app.patch('/properties/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const updatePropeties = req.body
+            const update = {
+                $set: {
+                    name: updatePropeties.name,
+                    Phone: updatePropeties.phone,
+                 }
+            }
+            const result = await propertiesCollection.updateOne(query, update);
+            res.send(result)
+        })
+
+        app.delete('/properties/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const result = await propertiesCollection.deleteOne(query);
             res.send(result);
         })
 
