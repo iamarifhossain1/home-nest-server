@@ -31,7 +31,7 @@ async function run () {
         const propertiesCollection = database.collection('properties')
 
         app.get('/properties', async (req, res) => {
-            const cursor = propertiesCollection.find();
+            const cursor = propertiesCollection.find().sort({price: -1}).limit(6);
             const result = await cursor.toArray();
             res.send(result);
         })
