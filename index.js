@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.port || 3000;
 
-const uri = "mongodb+srv://home-nest:Dcz6J8BpVbC8p503@crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server";
+const uri = "mongodb+srv://home-nest:YWmQ1FDMwtWmYAoO@crud-server.8t1odhz.mongodb.net/?appName=CRUD-Server";
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -31,7 +31,17 @@ async function run () {
         const propertiesCollection = database.collection('properties')
 
         app.get('/properties', async (req, res) => {
-            const cursor = propertiesCollection.find().sort({price: -1}).limit(6);
+            // const projectField = {propertyName: 1, price: 1, thumbnail: 1}
+            // const cursor = propertiesCollection.find().sort({price: -1}).limit(6).project(projectField);
+            
+            const email = req.query.email;
+            const query = {};
+            if (email) {
+                query.email = email;
+            }
+        
+
+            const cursor = propertiesCollection.find(query);
             const result = await cursor.toArray();
             res.send(result);
         })
@@ -101,4 +111,4 @@ app.listen(port, () => {
 // })
 
 // DB Username: home-nest
-// DB Password: Dcz6J8BpVbC8p503
+// DB Password: YWmQ1FDMwtWmYAoO
