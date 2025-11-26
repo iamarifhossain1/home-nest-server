@@ -29,6 +29,7 @@ async function run () {
 
         const database = client.db('home_nest')
         const propertiesCollection = database.collection('properties')
+        const bidsCollection = database.collection('bids')
 
         app.get('/properties', async (req, res) => {
             // const projectField = {propertyName: 1, price: 1, thumbnail: 1}
@@ -77,6 +78,33 @@ async function run () {
             const id = req.params.id;
             const query = {_id: new ObjectId(id)}
             const result = await propertiesCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // Bids related api's
+        app.get('/bids', async(req, res) => {
+
+            const email = req.query.email;
+            const query = {};
+            if (email) {
+                query.buyer_email = email;
+            }
+
+            const cursor = bidsCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        app.get('/bids/:id', async(req, res) => { 
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await bidsCollection.findOne(query);
+            res.send(result)
+        })
+
+        app.post('/bids', async(req, res) => {
+            const newBids = req.body;
+            const result = await bidsCollection.insertOne(newBids);
             res.send(result);
         })
 
